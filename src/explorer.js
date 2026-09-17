@@ -5,6 +5,7 @@ import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
 import {bodies,moons,deepSky} from './bodies.js';
+import {sphereBlocksSegment,rectOverlapsDisc,roundPointShader} from './visibility.js';
 import {AU,DAY,position,moonOffset,modelMoon,displayPosition,starPosition,ecliptic,period} from './ephemeris.js';
 
 const $=s=>document.querySelector(s),num=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:2});
@@ -24,6 +25,7 @@ const loader=new T.TextureLoader(),textureCache=new Map(),items=[],byId=new Map(
 const textureFiles={sun:'2k_sun.jpg',mercury:'2k_mercury.jpg',venus:'2k_venus_atmosphere.jpg',earth:'8k_earth_daymap.jpg',mars:'8k_mars.jpg',jupiter:'8k_jupiter.jpg',saturn:'8k_saturn.jpg',uranus:'2k_uranus.jpg',neptune:'2k_neptune.jpg',moon:'2k_moon.jpg'};
 function texture(file,color=true){if(textureCache.has(file))return textureCache.get(file);const tex=loader.load('assets/planets/'+file,undefined,undefined,()=>{errors.push(file);$('#status').textContent='Een beeldkaart kon niet laden: '+file;});tex.colorSpace=color?T.SRGBColorSpace:T.NoColorSpace;tex.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);textureCache.set(file,tex);return tex;}
 const sphere=new T.SphereGeometry(1,96,64);
+function roundPoints(options){const material=new T.PointsMaterial({...options,depthTest:true,depthWrite:false,transparent:true});material.onBeforeCompile=roundPointShader;material.customProgramCacheKey=()=> 'round-points-v1';return material;}
 function visualRadius(d){return d.id==='Sun'?3.2:d.parent?Math.max(.11,Math.sqrt(d.radius/6371)*.58):.5+Math.sqrt(d.radius/6371)*.62;}
 function radius(d){return state.physical?d.radius/AU*100:visualRadius(d);}
 function addLabel(name,obj,action){const el=document.createElement('button');el.className='object-label';el.textContent=name;el.onclick=action;$('#labels').append(el);labels.push({el,obj});return el;}
@@ -69,7 +71,7 @@ function belts(){
  disposeChildren(beltGroup);
  for(const [lo,hi,n,color,opacity] of [[2.1,3.3,9000,0xb9a68c,.45],[30,50,16000,0x87b7ce,.44],[.4,5,3000,0xd4b18b,.055]]){
  const coords=[];for(let i=0;i<n;i++){const r=lo+(hi-lo)*seeded(i+lo),a=seeded(i+30000)*Math.PI*2,z=(seeded(i+50000)-.5)*r*.09;coords.push(...displayPosition([Math.cos(a)*r,z,Math.sin(a)*r],state.physical));}
- const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(coords,3));beltGroup.add(new T.Points(g,new T.PointsMaterial({color,size:state.physical?.6:.22,transparent:true,opacity,depthWrite:false,sizeAttenuation:true,blending:T.AdditiveBlending})));
+ const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(coords,3));beltGroup.add(new T.Points(g,roundPoints({color,size:state.physical?.6:.22,opacity,sizeAttenuation:true,blending:T.AdditiveBlending})));
  }
 }
 let starsData=[],catalog=null,starPoints=null,skyPoints=null,starTargets=[];
@@ -85,7 +87,7 @@ function setupStars(){
  }
  for(const [group,data,isSky] of [[sky,directions,true],[stellar,vertices,false]]){
  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(data,3));g.setAttribute('color',new T.Float32BufferAttribute(isSky?colors:spatialColors,3));
- const m=new T.PointsMaterial({size:isSky?1.6:2.5,sizeAttenuation:false,vertexColors:true,transparent:true,opacity:.92,depthWrite:false});
+ const m=roundPoints({size:isSky?1.6:2.5,sizeAttenuation:false,vertexColors:true,opacity:.92});
  const points=new T.Points(g,m);group.add(points);if(isSky)skyPoints=points;else starPoints=points;
  }
  state.starEpoch=year;
@@ -157,7 +159,32 @@ $('#search').oninput=e=>{const q=e.target.value.toLocaleLowerCase().trim();$('#r
 document.addEventListener('click',e=>{if(!e.target.closest('.search'))$('#results').hidden=true;});
 function visitStar(s){if(state.flight)setFlight(false);setSector(true);state.track=null;moveCamera(s.point.clone().add(new T.Vector3(1,1,3)),s.point);$('#title').textContent=s.name;$('#subtitle').textContent=num.format(s.dist)+' parsec van de zon · magnitude '+s.mag;$('#kind').textContent='CATALOGUSSTER';}
 function visitDeep(d){if(state.flight)setFlight(false);setSector(true);state.track=null;state.selected=null;const dir=new T.Vector3(...starPosition(d.ra,d.dec)).normalize();moveCamera(new T.Vector3(),dir.multiplyScalar(1000));$('#title').textContent=d.name;$('#kind').textContent=d.type;$('#subtitle').textContent=num.format(d.distance)+' lichtjaar · J2000-richting';$('#objectName').textContent=d.name;$('#fact').textContent=d.fact;$('#metrics').replaceChildren();$('#moonList').replaceChildren();$('#moons').disabled=true;$('#modelNote').textContent='Telescoopbeeld met toegewezen kleuren; geen realtime zichtbare-lichtopname. Bron en credits onder Bronnen.';if(d.image){const image=document.createElement('img');image.src=d.image;image.alt=d.name;image.style.gridColumn='1 / -1';$('#metrics').append(image);}showPanel();}
-function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setPixelRatio(renderer.getPixelRatio());composer.setSize(innerWidth,innerHeight);}
+function updateLabels(){
+ if(state.sector){for(const l of labels)l.el.hidden=true;return;}
+ camera.updateMatrixWorld();
+ const origin=camera.position.toArray(),focal=innerHeight/(2*Math.tan(T.MathUtils.degToRad(camera.fov/2)));
+ const projected=items.map(item=>{
+  const p=item.root.position,view=p.clone().applyMatrix4(camera.matrixWorldInverse),v=p.clone().project(camera),r=radius(item),depth=-view.z;
+  // Conservative projected sphere bounds also cover off-axis, close-up planets.
+  const screenRadius=depth>r?focal*r/(depth-r)*(1+Math.hypot(view.x,view.y)/depth):Math.hypot(innerWidth,innerHeight)*2;
+  return {item,p:p.toArray(),r,depth,v,x:(v.x*.5+.5)*innerWidth,y:(-.5*v.y+.5)*innerHeight,radius:screenRadius};
+ });
+ for(let i=0;i<labels.length;i++){
+  const l=labels[i],d=projected[i],dist=camera.position.distanceTo(items[i].root.position);
+  let hidden=d.depth<=d.r||d.v.z>1||d.v.z< -1||Math.abs(d.v.x)>1||Math.abs(d.v.y)>1;
+  if(d.item.parent&&dist>radius(byId.get(d.item.parent))*70)hidden=true;
+  if(!hidden)hidden=projected.some(o=>o!==d&&sphereBlocksSegment(origin,d.p,o.p,o.r));
+  if(hidden){l.el.hidden=true;continue;}
+  l.el.hidden=false;
+  l.width ||= l.el.offsetWidth;l.height ||= l.el.offsetHeight;
+  const x=d.x+d.radius+8,y=d.y;
+  const rect={left:x+12,right:x+12+l.width,top:y-l.height/2,bottom:y+l.height/2};
+  hidden=rect.right>innerWidth||rect.left<0||rect.top<0||rect.bottom>innerHeight;
+  if(!hidden)hidden=projected.some(o=>o!==d&&o.depth>0&&o.depth-o.r<d.depth&&rectOverlapsDisc(rect,o));
+  l.el.hidden=hidden;l.el.style.left=x+'px';l.el.style.top=y+'px';
+ }
+}
+function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setPixelRatio(renderer.getPixelRatio());composer.setSize(innerWidth,innerHeight);for(const l of labels){l.width=0;l.height=0;}}
 addEventListener('resize',resize);
 let last=performance.now(),lastUI=0,frameCount=0;
 function animate(now){
@@ -171,7 +198,7 @@ function animate(now){
  sky.position.copy(camera.position);
  worldDock.hidden=!!state.selected||state.sector||state.flight;
  if(Math.abs(2000+(state.ms-Date.UTC(2000,0,1))/DAY/365.25-state.starEpoch)>.003)setupStars();
- for(const l of labels){const p=l.obj.getWorldPosition(new T.Vector3()),dist=p.distanceTo(camera.position),v=p.project(camera);l.el.hidden=state.sector||v.z>1||v.z< -1||Math.abs(v.x)>1||Math.abs(v.y)>1||dist<.05;const item=items.find(i=>i.root===l.obj);if(item?.parent&&dist>radius(byId.get(item.parent))*70)l.el.hidden=true;l.el.style.left=(v.x*.5+.5)*innerWidth+'px';l.el.style.top=(-v.y*.5+.5)*innerHeight+'px';}
+ updateLabels();
  if(now-lastUI>500){$('#clock').textContent=new Date(state.ms).toISOString().replace('T',' ').slice(0,19);$('#status').textContent=(state.sector?'HYG catalogus · afstanden in pc':state.physical?'AU-schaal · echte afstanden en stralen':'Verkenbaar · vergrote objecten')+' · '+renderer.domElement.width+' × '+renderer.domElement.height;lastUI=now;}
  composer.render();frameCount++;
 }
