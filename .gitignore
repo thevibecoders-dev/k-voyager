@@ -1,2 +1,4 @@
 .sites-runtime/
 *.tar.gz
+node_modules/
+work/hyg.csv

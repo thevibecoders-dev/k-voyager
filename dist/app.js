@@ -211,7 +211,7 @@
       stats.innerHTML=mw?`<div class="stat"><strong>${fmt.format(state.data.meta.systemCount)}</strong><span>stelsels</span></div><div class="stat"><strong>${fmt.format(state.data.meta.planetCount)}</strong><span>exoplaneten</span></div><div class="stat"><strong>1</strong><span>thuisstelsel</span></div>`:`<div class="stat"><strong>${state.galaxy.distance}</strong><span>vanaf de aarde</span></div><div class="stat"><strong>0</strong><span>bevestigde individuele planeten</span></div>`;
       crumbs.innerHTML=`<button data-go="universe">Heelal</button><span>/</span><button>${escapeHtml(state.galaxy.name)}</button>`;legend.innerHTML=mw?legendHtml([["system","Planetair stelsel"],["blackhole","Zonnestelsel / rijk stelsel"]]):legendHtml([["star","Onopgeloste sterpopulatie"]]);
     } else {
-      eyebrow.textContent="PLANETAIR STELSEL";title.textContent=state.system.name;copy.textContent=state.system.isSolar?"Alle planeten, erkende dwergplaneten en 421 planetaire manen zijn weergegeven.":"Banen en objectgroottes zijn symbolisch en logaritmisch geschaald.";
+      eyebrow.textContent="PLANETAIR STELSEL · SCHEMATISCHE ATLAS";title.textContent=state.system.name;copy.textContent=state.system.isSolar?"Symbolisch overzicht; maanpuntjes zijn geen berekende posities. Open 3D Voyager voor planeetbeelden en ephemeriden.":"Banen, baanfasen en objectgroottes zijn illustratief. Oppervlakken van deze exoplaneten zijn onbekend.";
       const pcs=currentPlanets();stats.innerHTML=`<div class="stat"><strong>${fmt.format(pcs.length)}</strong><span>${state.system.isSolar?"planeten + dwergplaneten":"bevestigde planeten"}</span></div>${state.system.isSolar?`<div class="stat"><strong>421</strong><span>planetaire manen</span></div>`:`<div class="stat"><strong>${nice(state.system.distancePc," pc")}</strong><span>vanaf de zon</span></div>`}`;
       crumbs.innerHTML=`<button data-go="universe">Heelal</button><span>/</span><button data-go="galaxy">Melkweg</button><span>/</span><button>${escapeHtml(state.system.name)}</button>`;legend.innerHTML=legendHtml([["star","Ster"],["planet","Planeet"],["dwarf","Dwergplaneet"],["moon","Maan"]]);
     }
@@ -270,5 +270,5 @@
     resize();requestAnimationFrame(render);
     try{const res=await fetch("data/exoplanets.json");if(!res.ok)throw new Error("catalogus niet bereikbaar");state.data=await res.json();buildSearch();registerWebMCP();$("#aboutPlanets").textContent=fmt.format(state.data.meta.planetCount);$("#aboutSystems").textContent=fmt.format(state.data.meta.systemCount);$("#dataDate").textContent=`Catalogus opgehaald op ${new Date(state.data.meta.retrieved).toLocaleDateString("nl-NL",{day:"numeric",month:"long",year:"numeric"})}.`;updateUI();setTimeout(()=>{const loading=$("#loading");loading.classList.add("done");loading.setAttribute("aria-hidden","true");},350);}catch(err){$("#loading").innerHTML=`<strong>De catalogus kon niet worden geladen</strong><span>${escapeHtml(err.message)}</span>`;}
   }
-  init();
+  init().then(()=>{const requested=new URLSearchParams(location.search).get('system');const hit=state.searchIndex?.find(x=>x.kind==='system'&&x.label===requested);if(hit)chooseSearch(hit);});
 })();

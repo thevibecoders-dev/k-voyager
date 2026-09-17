@@ -1,0 +1,218 @@
+{
+  "retrieved": "2026-09-17",
+  "creator": "Solar System Scope / INOVE",
+  "source": "https://www.solarsystemscope.com/textures/",
+  "license": "CC-BY-4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "credit": "Planet textures: Solar System Scope / INOVE, CC BY 4.0, based on NASA imagery. https://www.solarsystemscope.com/textures/",
+  "changes": "Downloaded original files without modification.",
+  "caveats": [
+    "Source states NASA elevation and imagery data, colors adjusted using spacecraft imagery. Some unmapped gaps contain matching fictional terrain; not complete scientific datasets.",
+    "Colors are enhanced; these are visualization maps, not guaranteed true-color or current-weather observations.",
+    "The files named 8k_jupiter.jpg and 8k_saturn.jpg decode to 4096x2048; do not advertise those as 8K.",
+    "All spherical maps are 2:1. Saturn ring is RGBA 2048x125, a radial strip requiring radial UV remap on annulus; not a spherical texture.",
+    "Earth clouds JPEG has no alpha. Use RGB/luminance as alpha mask on white slightly larger sphere.",
+    "Venus atmosphere is appropriate visible outer globe; surface is a below-cloud radar-informed visualization.",
+    "Earth night map should be night-side masked in custom shader; ordinary emissiveMap illuminates dayside too."
+  ],
+  "assets": [
+    {
+      "file": "2k_earth_clouds.jpg",
+      "bytes": 965676,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "FFFD7F68D41B37274822150E54A6EF605AF1D3EC35624D9F628C3B896BFA42ED",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_earth_clouds.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_earth_clouds.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_earth_daymap.jpg",
+      "bytes": 463087,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "767EE1DC6EB3802699BFCCF6F264880F8ACD0B80DE3191CD24984FE279B07B7C",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_earth_daymap.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg",
+      "recommended": false,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_earth_nightmap.jpg",
+      "bytes": 255287,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "C16FD1BC096AB91A5C5265C6FF9847C43F489F2E2EE790CCDBCBD03251CF3A5A",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_earth_nightmap.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_earth_nightmap.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_jupiter.jpg",
+      "bytes": 498976,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "B0F04D005350252636B0E3396FC592548CBD9E9126B269D32D5C6ABD4B0E4F2B",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_jupiter.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg",
+      "recommended": false,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_mars.jpg",
+      "bytes": 750547,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "2D187F3E77A98EAA8CEA5F4CC722F633C122EF170B9E94ACE6B5FB6CBC3F8E01",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_mars.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_mars.jpg",
+      "recommended": false,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_mercury.jpg",
+      "bytes": 872555,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "5A5C80607F643496BAC9A631E71957DEF35ED788895F18B678AC849C2B38E48A",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_mercury.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_mercury.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_moon.jpg",
+      "bytes": 1053869,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "2764BA6535EA0481A062846EE033CC7A909DAE05B31A8FD13F3E98F3A7FD92BD",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_moon.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_moon.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_neptune.jpg",
+      "bytes": 241580,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "CB42EA82709741D28B0AF44D8B283CBC6DBD0C521A7F0E1E1E010ADE00977DF6",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_neptune.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_neptune.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_saturn_ring_alpha.png",
+      "bytes": 12119,
+      "width": 2048,
+      "height": 125,
+      "sha256": "4B0644B2F3EF259FD0BFAEDD9DC52F9E7D9738F65F50363E8C4DD19F650D7334",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_saturn_ring_alpha.png",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_saturn_ring_alpha.png",
+      "recommended": true,
+      "projection": "radial strip"
+    },
+    {
+      "file": "2k_saturn.jpg",
+      "bytes": 199916,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "54A900CA9BF7AB62E70F862852759ABDF342E6D6436A95A2FE9EBDB6BCD3BBAC",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_saturn.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_saturn.jpg",
+      "recommended": false,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_sun.jpg",
+      "bytes": 822427,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "FF0F076BA65E03B5AB518451BC96699325BE38E3CCBDD5869EE1C00F3A0C8816",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_sun.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_sun.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_uranus.jpg",
+      "bytes": 77751,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "D15239D46F82D3EA13D2B260B5B29B2A382F42F2916DAE0694D0387B1204A09D",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_uranus.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_uranus.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_venus_atmosphere.jpg",
+      "bytes": 229696,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "225012AD4911730605C4E189CA2A3BF674FCE50CC48AAB4102B936B47D6991AC",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_venus_atmosphere.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_venus_atmosphere.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "2k_venus_surface.jpg",
+      "bytes": 885075,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "DBE5DB1C794A8AB4CBF7DD6BF193540C400FC833CE1E6CC399318AA68026278B",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/2k_venus_surface.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "8k_earth_daymap.jpg",
+      "bytes": 4565076,
+      "width": 8192,
+      "height": 4096,
+      "sha256": "88AB060B6E7D241CFC590C69F528FAB2B3247B738D40124CB590999A6FE44ABC",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/8k_earth_daymap.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/8k_earth_daymap.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "8k_jupiter.jpg",
+      "bytes": 3080980,
+      "width": 4096,
+      "height": 2048,
+      "sha256": "0BD844BF20822C4E3E80882B077859833C0DAC44C7E4E1E0CD63D1B1B6D43085",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/8k_jupiter.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/8k_jupiter.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "8k_mars.jpg",
+      "bytes": 8396951,
+      "width": 8192,
+      "height": 4096,
+      "sha256": "4CC52149924ABC6AE507D63032F994E1D42A55CB82C09E002D1A567FF66C23EE",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/8k_mars.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/8k_mars.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    },
+    {
+      "file": "8k_saturn.jpg",
+      "bytes": 1098204,
+      "width": 4096,
+      "height": 2048,
+      "sha256": "0D39A4A490C87C3EDABE00A3881A29BB3418364178C79C534FE0986E97E09853",
+      "path": "D:/Codex/2026-09-17/ma/work/planet-assets/8k_saturn.jpg",
+      "downloadUrl": "https://www.solarsystemscope.com/textures/download/8k_saturn.jpg",
+      "recommended": true,
+      "projection": "equirectangular"
+    }
+  ]
+}
