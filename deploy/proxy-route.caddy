@@ -1,0 +1,13 @@
+# Add to /opt/proxy/Caddyfile once, validate, then gracefully reload.
+# Subsequent application deployments do not touch the shared proxy.
+k-voyager.thevibecoders.app {
+ encode zstd gzip
+ header {
+  Strict-Transport-Security "max-age=31536000"
+  X-Content-Type-Options nosniff
+  X-Frame-Options DENY
+  Referrer-Policy strict-origin-when-cross-origin
+  -Server
+ }
+ reverse_proxy k-voyager-web:8080
+}

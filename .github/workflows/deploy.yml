@@ -1,0 +1,47 @@
+name: Deploy Voyager to VPS
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: voyager-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Package exact revision
+        run: |
+          node scripts/release.mjs "$GITHUB_SHA"
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner --exclude='dist/.openai' -czf voyager-release.tar.gz dist
+      - name: Deploy over restricted SSH connection
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          keydir=$(mktemp -d)
+          trap 'rm -f "$keydir/key" "$keydir/known_hosts"; rmdir "$keydir"' EXIT
+          printf '%s\n' "$VPS_SSH_KEY" > "$keydir/key"
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > "$keydir/known_hosts"
+          chmod 600 "$keydir/key" "$keydir/known_hosts"
+          archive_hash=$(sha256sum voyager-release.tar.gz | cut -d' ' -f1)
+          ssh -i "$keydir/key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$keydir/known_hosts" "$VPS_USER@$VPS_HOST" "deploy $GITHUB_SHA $archive_hash" < voyager-release.tar.gz
+      - name: Verify public release and neighboring services
+        run: |
+          node scripts/verify-production.mjs "$GITHUB_SHA"

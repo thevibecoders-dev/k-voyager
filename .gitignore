@@ -2,3 +2,4 @@
 *.tar.gz
 node_modules/
 work/hyg.csv
+dist/release.json
