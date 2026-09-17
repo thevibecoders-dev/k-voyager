@@ -19,7 +19,7 @@ export const moons=[
 {id:'Ganymede',name:'Ganymedes',parent:'Jupiter',radius:2631.2,distance:1070412,period:7.155,ephemeris:true},
 {id:'Callisto',name:'Callisto',parent:'Jupiter',radius:2410.3,distance:1882709,period:16.689,ephemeris:true},
 {id:'Mimas',name:'Mimas',parent:'Saturn',radius:198.2,distance:185539,period:.942,phase:.1},
-{id:'Enceladus',name:'Enceladus',parent:'Saturn',radius:252.1,distance:238037,period:1.37,phase:.3,fact:'Pluimen bij de zuidpool voeren materiaal uit een ondergrondse oceaan de ruimte in.'},
+{id:'Enceladus',name:'Enceladus',parent:'Saturn',radius:252.1,distance:238037,period:1.37,phase:.3,texture:'enceladus',fact:'Pluimen bij de zuidpool voeren materiaal uit een ondergrondse oceaan de ruimte in. Cassini-kaart met versterkte kleuren; geen bewijs van leven.'},
 {id:'Tethys',name:'Tethys',parent:'Saturn',radius:531.1,distance:294672,period:1.888,phase:.5},
 {id:'Dione',name:'Dione',parent:'Saturn',radius:561.4,distance:377415,period:2.737,phase:.7},
 {id:'Rhea',name:'Rhea',parent:'Saturn',radius:763.8,distance:527068,period:4.518,phase:.9},

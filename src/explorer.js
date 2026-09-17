@@ -9,6 +9,7 @@ import {sphereBlocksSegment,rectOverlapsDisc,roundPointShader} from './visibilit
 import {AU,DAY,position,moonOffset,modelMoon,displayPosition,starPosition,ecliptic,period} from './ephemeris.js';
 
 const $=s=>document.querySelector(s),num=new Intl.NumberFormat('nl-NL',{maximumFractionDigits:2});
+const expeditionCredit=document.createElement('p');expeditionCredit.innerHTML='Enceladus: Cassini-kaart PIA18435, NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute, Paul Schenk. Versterkte IR/zichtbaar/UV-kleuren; geen hoogtekaart. <a href="https://science.nasa.gov/photojournal/color-maps-of-enceladus-2014/">Bron</a> · <a href="assets/expedition-credits.json">Assetverantwoording</a>.';$('#about').append(expeditionCredit);
 const state={ms:Date.now(),speed:1,paused:false,physical:false,flight:false,sector:false,tour:false,selected:null,lastEphem:0,starEpoch:0,keys:new Set(),transition:null,track:null};
 const scene=new T.Scene(),camera=new T.PerspectiveCamera(48,innerWidth/innerHeight,.000001,100000);
 let renderer;
@@ -22,7 +23,7 @@ const solar=new T.Group(),paths=new T.Group(),beltGroup=new T.Group(),sky=new T.
 scene.add(new T.AmbientLight(0xbcd9ff,.14));
 const sunLight=new T.PointLight(0xfff3dd,3,0,0);solar.add(sunLight);
 const loader=new T.TextureLoader(),textureCache=new Map(),items=[],byId=new Map(),labels=[],errors=[];
-const textureFiles={sun:'2k_sun.jpg',mercury:'2k_mercury.jpg',venus:'2k_venus_atmosphere.jpg',earth:'8k_earth_daymap.jpg',mars:'8k_mars.jpg',jupiter:'8k_jupiter.jpg',saturn:'8k_saturn.jpg',uranus:'2k_uranus.jpg',neptune:'2k_neptune.jpg',moon:'2k_moon.jpg'};
+const textureFiles={sun:'2k_sun.jpg',mercury:'2k_mercury.jpg',venus:'2k_venus_atmosphere.jpg',earth:'8k_earth_daymap.jpg',mars:'8k_mars.jpg',jupiter:'8k_jupiter.jpg',saturn:'8k_saturn.jpg',uranus:'2k_uranus.jpg',neptune:'2k_neptune.jpg',moon:'2k_moon.jpg',enceladus:'enceladus-cassini-4k.jpg'};
 function texture(file,color=true){if(textureCache.has(file))return textureCache.get(file);const tex=loader.load('assets/planets/'+file,undefined,undefined,()=>{errors.push(file);$('#status').textContent='Een beeldkaart kon niet laden: '+file;});tex.colorSpace=color?T.SRGBColorSpace:T.NoColorSpace;tex.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);textureCache.set(file,tex);return tex;}
 const sphere=new T.SphereGeometry(1,96,64);
 function roundPoints(options){const material=new T.PointsMaterial({...options,depthTest:true,depthWrite:false,transparent:true});material.onBeforeCompile=roundPointShader;material.customProgramCacheKey=()=> 'round-points-v1';return material;}
@@ -205,7 +206,7 @@ function animate(now){
 async function init(){try{
  const res=await fetch('data/stars.json');if(!res.ok)throw Error('Stercatalogus niet beschikbaar');starsData=(await res.json()).stars;setupStars();updateBodies();orbitLines();belts();
  fetch('data/exoplanets.json').then(r=>r.json()).then(d=>catalog=d).catch(()=>{});
- camera.position.set(45,25,70);select(byId.get('Earth'));$('#loading').hidden=true;
+ camera.position.set(45,25,70);select(byId.get(new URLSearchParams(location.search).get('body'))||byId.get('Earth'));$('#loading').hidden=true;
  requestAnimationFrame(animate);
  const mc=document.modelContext;if(mc?.registerTool){mc.registerTool({name:'navigate_to_cosmic_object',description:'Navigeer in de 3D-kosmos naar een planeet of maan.',inputSchema:{type:'object',properties:{name:{type:'string'}},required:['name'],additionalProperties:false},annotations:{readOnlyHint:false},execute({name}){if(typeof name!=='string'||!name.trim())throw Error('Naam ontbreekt');const i=items.find(i=>[i.name,i.id].some(x=>x.toLowerCase()===name.toLowerCase()));if(!i)throw Error('Onbekend object');select(i);return{shown:i.name,mode:state.physical?'physical':'explore'};}});
  mc.registerTool({name:'read_catalog_summary',description:'Lees aantallen en simulatietijd.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute(){return{stars:starsData.length,planets:bodies.length-1,selectedMoons:moons.length,time:new Date(state.ms).toISOString(),source:'HYG v4.1 / Astronomy Engine'};}});}

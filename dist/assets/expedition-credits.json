@@ -1,0 +1,8 @@
+{
+  "retrieved": "2026-09-17",
+  "policy": "https://www.jpl.nasa.gov/jpl-image-use-policy/",
+  "assets": [
+    {"file":"planets/enceladus-cassini-4k.jpg","id":"PIA18435","source":"https://science.nasa.gov/photojournal/color-maps-of-enceladus-2014/","download":"https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia18/pia18435/PIA18435.jpg?w=4096&h=2048&fit=clip","credit":"NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute","mapAuthor":"Paul Schenk","sha256":"52BEB0786B1551D5D53312CC4697A0EAD766507FB3D085D5E733692C47078D43","dimensions":[4096,2048],"modification":"NASA image service downsampled original 15960x7980 mosaic without cropping.","limitations":"Enhanced IR/visible/UV color, north up. Baked illumination, not elevation or pure albedo. No precise feature-longitude registration claimed."},
+    {"file":"PIA14599-plume.jpg","id":"PIA14599","source":"https://science.nasa.gov/resource/dark-moon-dramatic-plume/","download":"https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/PIA14599.jpg?w=958&h=965&fit=clip&crop=faces%2Cfocalpoint","credit":"NASA/JPL-Caltech/Space Science Institute","sha256":"E79658084A0CC3B21C7C217C2A522E41E6488702D2C489875097DD566BBD4594","dimensions":[958,965],"observationDate":"2012-02-20","limitations":"True mission image, high phase angle 165 degrees. Not a 3D plume map."}
+  ]
+}
